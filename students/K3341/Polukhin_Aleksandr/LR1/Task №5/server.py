@@ -35,17 +35,17 @@ def handle_client(conn):
     elif request_line[0] == 'POST':
         # Получаем тело запроса
         body = lines[-1]
-        print(f"Тело POST-запроса: {body}")  # Отладочная информация
+        print(f"Тело POST-запроса: {body}")
 
         # Парсинг тела запроса
         params = parse_qs(body)
         subject = params.get('subject', [''])[0]
         grade = params.get('grade', [''])[0]
 
-        print(f"Добавление - Предмет: '{subject}', Оценка: '{grade}'")  # Отладочная информация
+        print(f"Добавление - Предмет: '{subject}', Оценка: '{grade}'")
 
         # Добавление оценки
-        if subject and grade:  # Проверяем, что параметры не пустые
+        if subject and grade:
             grades.append((subject, grade))
             response = "HTTP/1.1 200 OK\n"
             response += "Content-Type: text/html; charset=utf-8\n"
