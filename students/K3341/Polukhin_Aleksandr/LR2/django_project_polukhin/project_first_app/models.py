@@ -5,6 +5,12 @@ class Owner(models.Model):
     first_name = models.CharField(max_length=30, verbose_name="Имя")
     birth_date = models.DateField(null=True, blank=True, verbose_name="Дата рождения")
 
+    cars = models.ManyToManyField(
+        'Car',
+        through='Ownership',
+        related_name='owners'
+    )
+
     class Meta:
         verbose_name = "Автовладелец"
         verbose_name_plural = "Автовладельцы"
@@ -44,12 +50,13 @@ class Car(models.Model):
 class Ownership(models.Model):
     owner = models.ForeignKey(Owner, on_delete=models.CASCADE, verbose_name="Владелец")
     car = models.ForeignKey(Car, on_delete=models.CASCADE, verbose_name="Автомобиль")
-    start_date = models.DateTimeField(verbose_name="Дата начала")
-    end_date = models.DateTimeField(null=True, blank=True, verbose_name="Дата окончания")
+    start_date = models.DateTimeField(verbose_name="Дата начала владения")
+    end_date = models.DateTimeField(null=True, blank=True, verbose_name="Дата окончания владения")
 
     class Meta:
         verbose_name = "Владение"
         verbose_name_plural = "Владения"
 
     def __str__(self):
-        return f"{self.owner} владеет {self.car} с {self.start_date.strftime('%Y-%m-%d')}"
+        status = "владеет сейчас" if self.end_date is None else f"до {self.end_date.date()}"
+        return f"{self.owner} → {self.car} с {self.start_date.date()} ({status})"
